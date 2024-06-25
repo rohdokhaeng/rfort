@@ -44,12 +44,12 @@ var improvedGunPort = 0;
 
 $( document ).ready( function() {
 
-	reloadSpeedTextArray[1] = "(¸ğÀüÄ³³í)";
-	reloadSpeedTextArray[2] = "(Æ¯Æ¯Ä³,±ØÁ¦ÇÃ·¹¾î)";
-	reloadSpeedTextArray[3] = "(°³Æ¯¼¼,¸ğÀüÇÏÆä,±ØÁ¦¾Æ¸Ó)";
-	reloadSpeedTextArray[4] = "(¸ğÀüÄ®·Î)";
-	reloadSpeedTextArray[5] = "(¸ğÀü½´¹Ì,¸ğÀü¹ßÄ­)";
-	reloadSpeedTextArray[6] = "(°³°­Æ¯½´,Æ¯°­Æ¯¹ß)";
+	reloadSpeedTextArray[1] = "(ëª¨ì „ìºë…¼)";
+	reloadSpeedTextArray[2] = "(íŠ¹íŠ¹ìº,ê·¹ì œí”Œë ˆì–´)";
+	reloadSpeedTextArray[3] = "(ê°œíŠ¹ì„¸,ëª¨ì „í•˜í˜,ê·¹ì œì•„ë¨¸)";
+	reloadSpeedTextArray[4] = "(ëª¨ì „ì¹¼ë¡œ)";
+	reloadSpeedTextArray[5] = "(ëª¨ì „ìŠˆë¯¸,ëª¨ì „ë°œì¹¸)";
+	reloadSpeedTextArray[6] = "(ê°œê°•íŠ¹ìŠˆ,íŠ¹ê°•íŠ¹ë°œ)";
 	redraw();
 	
 	buildRapidSkill();
@@ -68,7 +68,7 @@ function redraw() {
 
 function buildGunnerySkill() {
 
-	var HTML = "<th>Æ÷¼ú·©Å©</th>";
+	var HTML = "<th>í¬ìˆ ë­í¬</th>";
 	
 	for( var i = minGunnerySkill ; i<=maxGunnerySkill ; i++ ) {
 	
@@ -91,7 +91,7 @@ function buildReloadSpeed() {
 			
 	
 			
-			HTML += "<th>ÀåÀü¼Óµµ"+ i + reloadSpeedTextArray[i] + "</th>";
+			HTML += "<th>ì¥ì „ì†ë„"+ i + reloadSpeedTextArray[i] + "</th>";
 			
 			for( var j = minGunnerySkill ; j<=maxGunnerySkill ; j++ ) {
 			
@@ -120,11 +120,11 @@ function buildRapidSkill() {
 
 	var HTML = "";
 	
-	HTML += "<option value='0' selected='selected'>¼Ó»çX</option>";
+	HTML += "<option value='0' selected='selected'>ì†ì‚¬X</option>";
 	
 	for( var i = minRapidSkill ; i<=maxRapidSkill ; i++ ) {
 	
-		HTML += "<option value='" + i + "'>¼Ó»ç " + i + "·©</option>";
+		HTML += "<option value='" + i + "'>ì†ì‚¬ " + i + "ë­</option>";
 	
 	}
 	
@@ -160,9 +160,9 @@ function onClickImprovedGunPort() {
 	<table id="reloadSpeedTable"></table>
 	
 	<br/>
-	°­È­Æ÷¹® : <input type="checkbox" id="improvedGunPort" onclick="onClickImprovedGunPort()"/> ÁıÁßÀåÀü : <input type="checkbox" id="fastReload" onclick="redraw()"/>
+	ê°•í™”í¬ë¬¸ : <input type="checkbox" id="improvedGunPort" onclick="onClickImprovedGunPort()"/> ì§‘ì¤‘ì¥ì „ : <input type="checkbox" id="fastReload" onclick="redraw()"/>
 	<br/>
 	<br/>
-	¼Ó»ç(¿¬¼º) : <select id="rapidSkill" onchange="onChangeRapidSkill()"></select>
+	ì†ì‚¬(ì—°ì„±) : <select id="rapidSkill" onchange="onChangeRapidSkill()"></select>
 	
 </body>

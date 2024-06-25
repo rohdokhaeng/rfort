@@ -1,0 +1,168 @@
+<style>
+table {
+  border-collapse: collapse;
+}
+ th {
+  background: #ccc;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background: #efefef;
+}
+
+tr:hover {
+  background: #d1d1d1;
+}
+</style>
+
+<script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+
+<script>
+
+var minGunnerySkill = 18;
+var maxGunnerySkill = 25;
+
+var minReloadSpeed = 1;
+var maxReloadSpeed = 6;
+var reloadSpeedTextArray = new Array();
+
+var minRapidSkill = 12;
+var maxRapidSkill = 25;
+
+var requireGuage = 100;
+var improvedGunPort = 0;
+
+
+
+$( document ).ready( function() {
+
+	reloadSpeedTextArray[1] = "(모전캐논)";
+	reloadSpeedTextArray[2] = "(특특캐,극제플레어)";
+	reloadSpeedTextArray[3] = "(개특세,모전하페,극제아머)";
+	reloadSpeedTextArray[4] = "(모전칼로)";
+	reloadSpeedTextArray[5] = "(모전슈미,모전발칸)";
+	reloadSpeedTextArray[6] = "(개강특슈,특강특발)";
+	redraw();
+	
+	buildRapidSkill();
+} );
+
+function redraw() {
+
+	$( "[id='reloadSpeedTable']" ).html( "" );
+	
+	buildGunnerySkill();
+	
+	buildReloadSpeed();
+	
+
+}
+
+function buildGunnerySkill() {
+
+	var HTML = "<th>포술랭크</th>";
+	
+	for( var i = minGunnerySkill ; i<=maxGunnerySkill ; i++ ) {
+	
+		HTML += "<th>" + i + "</th>";
+	
+	}
+	
+	$( "[id='reloadSpeedTable']" ).append( HTML );
+}
+
+function buildReloadSpeed() {
+
+	var HTML = "";
+	var reloadGuage = 0;
+	var reloadTick = 0;
+
+	for( var i = minReloadSpeed ; i<=maxReloadSpeed ; i++ ) {
+	
+			HTML += "<tr>";
+			
+	
+			
+			HTML += "<th>장전속도"+ i + reloadSpeedTextArray[i] + "</th>";
+			
+			for( var j = minGunnerySkill ; j<=maxGunnerySkill ; j++ ) {
+			
+				reloadGuage = Math.floor( 3.5 + ( i * 1.5 ) + ( j * 0.5 ) + improvedGunPort );
+				
+				if( $( "#fastReload" ).prop( "checked" ) ) {
+				
+					reloadGuage = Math.floor( reloadGuage * 1.5 );
+				
+				}
+				
+				reloadTick = Math.ceil( requireGuage / reloadGuage );
+				
+
+				
+				HTML += "<td>" + reloadTick + "</td>";
+			}
+			
+			HTML += "</tr>";
+	}
+	
+	$( "[id='reloadSpeedTable']" ).append( HTML );
+}
+
+function buildRapidSkill() {
+
+	var HTML = "";
+	
+	HTML += "<option value='0' selected='selected'>속사X</option>";
+	
+	for( var i = minRapidSkill ; i<=maxRapidSkill ; i++ ) {
+	
+		HTML += "<option value='" + i + "'>속사 " + i + "랭</option>";
+	
+	}
+	
+	$( "[id='rapidSkill']" ).append( HTML );
+}
+
+function onChangeRapidSkill() {
+
+	var rapidSkill = Number( $( "#rapidSkill option:selected" ).val() );
+	
+	if( rapidSkill > 0 ) {
+	
+		requireGuage = 100 - ( rapidSkill + 10 ) - 10;
+		
+		
+		
+		redraw();
+	}
+
+}
+
+function onClickImprovedGunPort() {
+
+	improvedGunPort = $( "#improvedGunPort" ).prop( "checked" ) ? 1 : 0;
+	
+	redraw();
+}
+
+</script>
+
+<body>
+
+	<table id="reloadSpeedTable"></table>
+	
+	<br/>
+	강화포문 : <input type="checkbox" id="improvedGunPort" onclick="onClickImprovedGunPort()"/> 집중장전 : <input type="checkbox" id="fastReload" onclick="redraw()"/>
+	<br/>
+	<br/>
+	속사(연성) : <select id="rapidSkill" onchange="onChangeRapidSkill()"></select>
+	
+</body>

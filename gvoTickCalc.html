@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+
+<head>
+
+<title>대포 장전 속도 계산기 </title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="Author" content="노독행" />
+<meta name="Keywords" content="대항, 대포, 장전" />
+<meta name="Description" content="대항해시대 온라인 대포 장전속도 계산기" />
+
+<style>
+
+div { padding-top : 30px }
+table { text-align : center;width : 100%}
+table, span, input, select { font-size : 30px }
+select { width : 400px;height : 60px;text-align : center }
+input { width : 50px;height : 30px }
+
+th { width : 50px; border : 1px solid }
+td { width : 50px; border : 1px solid }
+
+.desc { font-weight : bold;padding-top : 50px;font-size : 30px  }
+
+@media (max-width: 1440px) {
+
+    div { padding-top : 30px }
+    table, input, select { font-size : 15px }
+    span { font-size : 20px }
+    select { width : 100%;height : 60px;text-align : center }
+    input { width : 10%;height : auto}
+
+    th { width : 50px; border : 1px solid }
+    td { width : 50px; border : 1px solid }
+
+    .desc { font-weight : bold;padding-top : 50px;font-size : 15px }
+}
+
+</style>
+
+<script>
+
+var minGunnerySkill = 18;
+var maxGunnerySkill = 25;
+
+var minReloadSpeed = 1;
+var maxReloadSpeed = 6;
+
+var minRapidSkill = 12;
+var maxRapidSkill = 25;
+
+var requireGuage = 100;
+var improvedGunPort = 0;
+
+var currentSpeedIndex = 0;
+
+$( document ).ready( function() {
+
+    redraw();
+
+    buildRapidSkill();
+
+
+} );
+
+function redraw() {
+
+    $( "[id='reloadSpeedTable']" ).html( "" );
+
+    buildGunnerySkill();
+
+    buildReloadSpeed();
+
+    strongRow( currentSpeedIndex );
+
+
+}
+
+function buildGunnerySkill() {
+
+    var HTML = "<tr style='background-color : yellow'>";
+
+    HTML += "<th style='width : 200px;'>포술랭</th>";
+
+    for( var i = minGunnerySkill ; i<=maxGunnerySkill ; i++ ) {
+
+        HTML += "<td>" + i + "</td>";
+
+    }
+
+    HTML += "</tr>";
+
+    $( "[id='reloadSpeedTable']" ).append( HTML );
+}
+
+function buildReloadSpeed() {
+
+    var HTML = "";
+    var reloadGuage = 0;
+    var reloadTick = 0;
+
+    for( var i = minReloadSpeed ; i<=maxReloadSpeed ; i++ ) {
+
+            HTML += "<tr onclick='strongRow( " + i + " )'>";
+
+
+
+            HTML += "<th style='width : 200px;'><input type='checkbox' id='reloadSpeed_" + i + "' onclick='strongRow( " + i + " )' /><label for='reloadSpeed_" + i + "'> 장속"+ i + "</label></th>";
+
+            for( var j = minGunnerySkill ; j<=maxGunnerySkill ; j++ ) {
+
+                reloadGuage = Math.floor( 3.5 + ( i * 1.5 ) + ( j * 0.5 ) + improvedGunPort );
+
+                if( $( "#concernReload" ).prop( "checked" ) ) {
+
+                    reloadGuage = Math.floor( reloadGuage * 1.5 );
+
+                }
+
+                reloadTick = Math.ceil( requireGuage / reloadGuage );
+
+
+
+                HTML += "<td>" + reloadTick + "</td>";
+            }
+
+            HTML += "</tr>";
+    }
+
+    $( "[id='reloadSpeedTable']" ).append( HTML );
+}
+
+function buildRapidSkill() {
+
+    var HTML = "";
+
+    HTML += "<option value='0' selected='selected'>속사안씀</option>";
+
+    for( var i = minRapidSkill ; i<=maxRapidSkill ; i++ ) {
+
+        HTML += "<option value='" + i + "'>속사 " + i + "랭</option>";
+
+    }
+
+    $( "[id='rapidSkill']" ).append( HTML );
+}
+
+function onChangeRapidSkill() {
+
+    var rapidSkill = Number( $( "#rapidSkill option:selected" ).val() );
+
+    if( rapidSkill > 0 ) {
+
+        requireGuage = 100 - ( rapidSkill + 10 ) - 10;
+    }
+        else {
+
+            requireGuage = 100;
+        }
+
+
+        redraw();
+
+
+}
+
+function onClickImprovedGunPort() {
+
+    improvedGunPort = $( "#improvedGunPort" ).prop( "checked" ) ? 1 : 0;
+
+    redraw();
+}
+
+function onChangeCanonType() {
+
+    strongRow( $( "#canonType option:selected" ).val() );
+
+}
+
+function strongRow( index ) {
+
+    currentSpeedIndex = index;
+
+    $( "#reloadSpeedTable" ).find( "tr:gt(0)" ).css( "background-color", "" );
+    $( "#reloadSpeedTable" ).find( "input:checkbox" ).prop( "checked", false );
+
+    if( currentSpeedIndex > 0 ) {
+        $( "#reloadSpeedTable" ).find( "input:checkbox" ).eq( currentSpeedIndex - 1 ).prop( "checked", true );
+        $( "#reloadSpeedTable" ).find( "tr" ).eq( currentSpeedIndex ).css( "background", "red" );
+
+    }
+
+
+}
+
+</script>
+
+<body>
+
+    <table id="reloadSpeedTable"></table>
+
+    <div>
+        <span style="font-weight : bold">※ 속사는 당연히 연성했다고 가정됨</span><br/>
+        <select id="rapidSkill" onchange="onChangeRapidSkill()"></select>
+    </div>
+    <div>
+        <select id="canonType" onchange="onChangeCanonType()">
+            <option value="0" selected="selected">대포선택</option>
+            <option value="1">모전캐논</option>
+            <option value="2">특특캐/개특하페</option>
+            <option value="3">개특세/모전하페</option>
+            <option value="4">모전칼로</option>
+            <option value="5">모전슈미/모전발칸</option>
+            <option value="6">특(강)특발</option>
+            <option value="6">개(강)특슈</option>
+        </select>
+    </div>
+    <div>
+        <input type="checkbox" id="improvedGunPort" onclick="onClickImprovedGunPort()"/><span><label for="improvedGunPort">강화포문</label></span>
+    </div>
+    <div>
+        </span><input type="checkbox" id="concernReload" onclick="redraw()"/><span><label for="concernReload">집중장전</label></span>
+    </div>
+    <div class="desc">
+        ※ 일반적인 강포들 노속사 빠른 장전<br/>(틱=대포게이지 눈금 올라가는거)<br/><br/>
+        특(강)특발 : 포술25랭일때 4틱(강화포문시 23랭)<br/>
+        개(강)특슈 : 상동<br/>
+        특특캐 : 포술21랭 6틱(포술25랭+강화포문시 5틱)<br/>
+        개특세 : 포술24랭일때 5틱(강화포문시 22랭)<br/><br/>
+
+        ※ 속사로 가장 빠른 장전<br/><br/>
+        특(강)특발 : 포술21+속사12로 3틱<br/>
+        개(강)특슈 : 상동<br/>
+        특특캐 : 포술25+속사20+강화포문으로 3틱<br/>
+
+</body>
+
+</html>
